@@ -28,7 +28,11 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+// firebase importing database
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
@@ -49,16 +53,26 @@ public class AddListingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        return inflater.inflate(R.layout.fragment_add_listing, container, false);
+    //declare firebase
+        FirebaseAuth mAuth;
+        FirebaseUser mUser;
 
+        //initialize
         final View rootView = inflater.inflate(R.layout.fragment_add_listing, container, false);
          fab = (FloatingActionButton) rootView.findViewById(R.id.fab_addimage);
         imageView = (ImageView) rootView.findViewById(R.id.image);
         txtTitle = (EditText) rootView.findViewById(R.id.txtTitle);
         txtCaption= (EditText) rootView.findViewById(R.id.txtCaption);
         txtDescription = (EditText) rootView.findViewById(R.id.txtDescription);
+        btn_save = (Button) rootView.findViewById(R.id.btnSave);
 
         // Adding category names to spinner https://www.tutorialspoint.com/how-can-i-add-items-to-a-spinner-in-android
         Spinner spinner = rootView.findViewById(R.id.spnCategory);
+        //creating an instance of database
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+        /// create reference of database
+        DatabaseReference dbRef = db.getReference(ListingDetails.class.getSimpleName());
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Water");
         arrayList.add("Animals");
@@ -82,13 +96,16 @@ public class AddListingFragment extends Fragment {
             public void onNothingSelected(AdapterView <?> parent) {
             }
         });
+   // save button listener and database PUSH method
+         btn_save.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 ListingDetails ld = new ListingDetails(txtTitle.getText().toString(), txtCaption.getText().toString(), txtDescription.getText().toString(), spnCategory.toString());
+               //push to database
+                 dbRef.push().setValue(ld);
+             }
+         });
 
-//         btn_save.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View view) {
-//
-//             }
-//         });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
