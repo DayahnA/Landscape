@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -32,9 +34,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
     public class AddListing extends AppCompatActivity implements View.OnClickListener{
-
+        SharedPreferences sp;
         FirebaseAuth mAuth;
         FirebaseUser mUser;
+        String title,caption,description;
+        String cat;
         final EditText txtTitle =findViewById(R.id.txtTitle);
         final  EditText txtCaption =findViewById(R.id.txtCaption);
         final  EditText txtDescription =findViewById(R.id.txtDescription);
@@ -45,6 +49,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
         /// create reference of database
         DatabaseReference dbRef = db.getReference(ListingDetails.class.getSimpleName());
         //initialize  variables
+
         String[] categories = {"Water", "Animals", "Plants/Trees", "Land", "Life", "Sky", "Flowers", "Space"};
         Spinner category;
         AddListing ad = new AddListing();
@@ -52,9 +57,20 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
             // Set the content of the activity to use the activity_main.xml layout file
             setContentView(R.layout.fragment_add_listing);
+
+
+            sp = getSharedPreferences("myListPrefs",Context.MODE_PRIVATE);
+
+            SharedPreferences.Editor editor= sp.edit();
+
+            editor.putString("title",title);
+            editor.putString("caption",caption);
+            editor.putString("description",description);
+            editor.putString("category",cat);
+            editor.commit();
+
 
 
 
@@ -74,6 +90,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
         public void onClick(View view) {
          if (view.getId()== R.id.saveAddList)
          {
+              title= txtTitle.getText().toString();
+             caption= txtTitle.getText().toString();
+             description = txtTitle.getText().toString();
+             cat= spnCategory.toString();
+
               ListingDetails ld = new ListingDetails(txtTitle.getText().toString(), txtCaption.getText().toString(), txtDescription.getText().toString(), spnCategory.toString());
               add(ld);
          }
