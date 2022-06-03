@@ -37,7 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
         SharedPreferences sp;
         FirebaseAuth mAuth;
         FirebaseUser mUser;
-        String title,caption,description;
+        String title,userID,caption,description;
         String cat;
         final EditText txtTitle =findViewById(R.id.txtTitle);
         final  EditText txtCaption =findViewById(R.id.txtCaption);
@@ -65,6 +65,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
             SharedPreferences.Editor editor= sp.edit();
 
+            editor.putString("title",userID);
             editor.putString("title",title);
             editor.putString("caption",caption);
             editor.putString("description",description);
@@ -90,10 +91,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
         public void onClick(View view) {
          if (view.getId()== R.id.saveAddList)
          {
+              userID=  mUser.getUid().toString();
               title= txtTitle.getText().toString();
-             caption= txtTitle.getText().toString();
-             description = txtTitle.getText().toString();
-             cat= spnCategory.toString();
+              caption= txtTitle.getText().toString();
+              description = txtTitle.getText().toString();
+              cat= spnCategory.toString();
 
               ListingDetails ld = new ListingDetails(txtTitle.getText().toString(), txtCaption.getText().toString(), txtDescription.getText().toString(), spnCategory.toString());
               add(ld);
